@@ -49,20 +49,22 @@ public class AccountServicesImpl implements AccountServices {
         if (accountPools.size()>0)
         {
             TppProductRegister newRegister = new TppProductRegister();
-            newRegister.setId(1);
             newRegister.setProductId(accountReq.getInstanceId());
             newRegister.setProductRegisterType(tppRefProductRegisterType);
             newRegister.setAccount(Long.valueOf(accountPools.get(0).getAccountList().get(0).getId()));
             newRegister.setCurrencyCode(accountReq.getCurrencyCode());
             newRegister.setState(AccountState.valueOf("OPEN"));
             newRegister.setAccountNumber(accountPools.get(0).getAccountList().get(0).getAccountNumber());
-            newRegister.setValue("111");
-            newRegister = tppProductRegisterRepository.save(newRegister);
+            TppProductRegister newRegisters = tppProductRegisterRepository.save(newRegister);
 
             ResponseBodyAccountDto responseBodyAccountDto = new ResponseBodyAccountDto();
-            responseBodyAccountDto.setAccountId(newRegister.getId().toString());
+            responseBodyAccountDto.setAccountId(newRegisters.getId().toString());
             return responseBodyAccountDto;
         }
-        return null;
+        else
+        {
+            throw new NotFoundException("accountPools не найден с параметрами BranchCode "+accountReq.getBranchCode()+", CurrencyCode "+accountReq.getCurrencyCode()+", MdmCode "+accountReq.getMdmCode()+", PriorityCode "+accountReq.getPriorityCode()+", RegistryTypeCode "+accountReq.getRegistryTypeCode());
+        }
+
     }
 }
